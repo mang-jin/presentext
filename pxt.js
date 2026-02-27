@@ -23,6 +23,7 @@ class Widget {
         this.is_italic = false;
         this.is_underlined = false;
         this.is_strikethrough = false;
+        this.rendering = "";
     }
     Push(value, back=false) {
         if (value.weight != 0) {

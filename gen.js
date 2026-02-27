@@ -121,12 +121,15 @@ function pxt_proc_space(stack)
     stack.push(new Widget(SPACE, 0, weight + "rem"));
 }
 
-function pxt_proc_img(stack)
+function pxt_proc_img(stack,pixel=false)
 {
     let img_path = stack.pop();
     let weight = stack.pop();
     if (typeof weight != "number" || typeof img_path != "string") return "img requires (widget: Widget, img_path: string)";
-    stack.push(new Widget(IMG, weight, img_path));
+    let newW = new Widget(IMG, weight, img_path)
+    if (pixel)
+        newW.rendering="pixelated";
+    stack.push(newW);
 }
 
 function pxt_proc_bg(stack)
@@ -269,6 +272,7 @@ fileInput.addEventListener("change", () => {
                 if (token == null) throw new Error("something went wrong");
                 else if (PUSHABLE_TOKENS.indexOf(token.type)!=-1) stack.push(token.value);
                 else if (token.value == "img") error = pxt_proc_img(stack);
+                else if (token.value == "img-pixel") error = pxt_proc_img(stack,pixel=true);
                 else if (token.value == "bg") error = pxt_proc_bg(stack);
                 else if (token.value == "space") error = pxt_proc_space(stack);
                 else if (token.value == "text") error = pxt_proc_text(stack);
@@ -351,7 +355,11 @@ fileInput.addEventListener("change", () => {
                             let tag = "span";
                             result += `<${tag} style="margin: ${cur().value};"></${tag}>`;
                         }
-                        if (cur().type == IMG) result += `<img style="flex-grow: ${cur().weight}" data-src="${cur().value}"/>`;
+                        if (cur().type == IMG) {
+                            result += `<img style="`;
+                            if (cur().rendering) result += `image-rendering: ${cur().rendering};`;
+                            result += `flex-grow: ${cur().weight}" data-src="${cur().value}"/>`;
+                        }
                         if (cur().type == BINDING) {
                             let tag = "span";
                             result += `<${tag} class="binding">${DoSomething(cur().body)}</${tag}>`;

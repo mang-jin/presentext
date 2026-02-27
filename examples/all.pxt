@@ -41,8 +41,14 @@ slide
 1 1 group
 begin
     3 "The placement of widgets is quite flexible." text2
+    1 "The group system make it easier to place things somewhere." text2
+    1 1 group
+    begin
+        1 "Penger.png" img-pixel
+    end
+    0 2 align-group
+    1 2 align-group
 end
 0 0 align-group
 1 0 align-group
-1 "Penger.png" img
 slide
