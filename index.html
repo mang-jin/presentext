@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Presentext</title>
+    <style>
+      span {
+          text-align: center;
+      }
+
+      @font-face {
+          font-family: "Paperlogy";
+          src: url("Paperlogy-Regular.ttf") format("truetype");
+          font-weight: normal;
+      }
+
+      @font-face {
+          font-family: "Paperlogy";
+          src: url("Paperlogy-Bold.ttf") format("truetype");
+          font-weight: bold;
+      }
+
+      html,
+      body {
+          font-family: "Paperlogy";
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          padding: 0;
+      }
+
+      .output {
+          width: 100vw;
+          height: 100vh;
+          flex-direction: column;
+          margin: 0 0 1rem 0;
+          padding: 1rem;
+          box-sizing: border-box;
+          background: #f4f4f4;
+      }
+
+      .output,
+      .group {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: center;
+          flex-basis: 0;
+          flex-shrink: 1;
+      }
+
+      .group {
+          align-self: stretch;
+          padding: 1rem;
+          margin: 0.5rem;
+      }
+
+      body {
+          width: 100vw;
+          height: 100vh;
+      }
+
+      h2 {
+          font-weight: bold;
+      }
+
+      .box {
+          background: #f9f9f9;
+          outline: 2px solid black;
+      }
+    </style>
+    <style id="assetStyle"></style>
+  </head>
+  <body>
+    <h2>Presentext</h2>
+
+    <input type="file" id="fileInput" accept=".pxt" />
+    <input type="file" id="assetInput" webkitdirectory />
+    <button id="download">Download</button>
+    <hr />
+
+    <div id="real_output"></div>
+
+    <script>
+      const assetInput = document.getElementById("assetInput");
+      const assetStyle = document.getElementById("assetStyle");
+      let assets = {};
+      assetInput.addEventListener("change", () => {
+          assetStyle.textContent = "";
+          assets={};
+          for (const file of assetInput.files) {
+              const reader = new FileReader();
+              reader.onload = () => {
+                  const base64 = reader.result;
+                  const name = file.webkitRelativePath.replace(/^.+\//, "");
+                  assets[name] = base64;
+
+                  let class_name = ".img-" + name.replace(/\./g, "\\.");
+                  let url_name = base64.replace(/\'/g, "\\'");
+                  assetStyle.textContent += `
+					${class_name} {
+						background-image: url('${url_name}');
+						background-size: cover;
+						background-position: center;
+						background-repeat: no-repeat;
+					}
+
+				`;
+              };
+              reader.readAsDataURL(file);
+          }
+          let waitPromise = new Promise((resolve)=>{
+              const check = () => {
+                  console.log("loading assets...");
+                  if (Object.keys(assets).length == assetInput.files.length) {
+                      resolve();
+                  } else {
+                      setTimeout(check, 500);
+                  }
+              };
+              check();
+          });
+          (async () => {
+              await waitPromise;
+              document.querySelectorAll("img").forEach(el=>{
+                  el.src=assets[el.dataset.src];
+              });
+          })();
+      });
+    </script>
+    <script src="bold_font.js"></script>
+    <script src="regular_font.js"></script>
+    <script src="pxt.js"></script>
+    <script src="gen.js"></script>
+  </body>
+</html>

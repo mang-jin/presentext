@@ -1,0 +1,48 @@
+1 binding
+begin
+    10 {} "Presen" text
+    10 {"bold": true} "text" text
+end
+2.5 {} "Made by Kim" text
+slide
+1 0 group
+begin
+    1 0 group
+    begin
+        20 {"bold": true} "Hello!" text
+    end
+    1 1 group
+    begin
+        1 space
+        2 "Welcome to Presentext." text2
+        1 "Simple and Portable Presentation" text2
+    end
+    0 0 align-group
+    1 1 align-group
+end
+slide
+1 binding
+begin
+    10 {} "You can be " text
+    10 {"bold": true} 0xFF0000 "C" text4
+    10 {"bold": true} 0xFF8000 "o" text4
+    10 {"bold": true} 0xFFFF00 "l" text4
+    10 {"bold": true} 0x008000 "o" text4
+    10 {"bold": true} 0x0000FF "r" text4
+    10 {"bold": true} 0x000080 "f" text4
+    10 {"bold": true} 0x800080 "u" text4
+    10 {"bold": true} 0x400040 "l" text4
+end
+slide
+
+1 0xFFFFFFaa "you can also put images in here." text3
+"fog.jpg" slide-bg
+
+1 1 group
+begin
+    3 "The placement of widgets is quite flexible." text2
+end
+0 0 align-group
+1 0 align-group
+1 "Penger.png" img
+slide

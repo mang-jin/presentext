@@ -1,0 +1,37 @@
+<body></body>
+
+<script>
+  let slides = [];
+</script>
+
+<script>
+  let idx = -1;
+  function next() {
+    if (idx == slides.length - 1) return;
+    idx++;
+    document.body.innerHTML = slides[idx];
+  }
+  function prev() {
+    if (idx < 1) return;
+    idx--;
+    document.body.innerHTML = slides[idx];
+  }
+
+  window.onload = () => next();
+
+  document.addEventListener("click", () => {
+    next();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.code === "Space") {
+      next();
+    }
+    if (event.code === "ArrowRight") {
+      next();
+    }
+    if (event.code === "ArrowLeft") {
+      prev();
+    }
+  });
+</script>
