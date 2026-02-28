@@ -13,10 +13,14 @@ begin
         begin
             3 {} "#ffffff" "어디고등학교 3학년 1반" text4
             60 space
-            2.5 {} "#ffffffaa" "2030년도 1학기" text4
+            2.5 {} "#ffffff" "2030년도 1학기" text4
+            67 set-z
         end
     end 0 0 align-group 1 0 align-group
 end
+75 "Penger.png" img-pixel
+75 45 pos-abs
+1 set-z
 slide
 "#40b3ff" bg-clr
 

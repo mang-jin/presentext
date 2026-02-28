@@ -117,6 +117,29 @@ function pxt_proc_text4(stack)
     stack.push(newW)
 }
 
+function pxt_proc_set_z(stack)
+{
+    let idx = stack.pop();
+    let widget = stack.pop()
+    if (!(widget instanceof Widget) || typeof idx != "number") return "set-z requires (widget: Widget, idx: number)";
+    widget.style.push(`z-index: ${idx}`);
+    stack.push(widget);
+}
+
+function pxt_proc_pos_abs(stack)
+{
+    let y = stack.pop();
+    let x = stack.pop();
+    let widget = stack.pop()
+    if (typeof x != "number" || typeof y != "number" || !(widget instanceof Widget)) return "pos-abs requires (widget: Widget, x, y: number)";
+    widget.style.push("position: absolute");
+    widget.style.push(`left: ${x}vw`);
+    widget.style.push(`top: ${y}vh`);
+    widget.style.push(`transform: translate(-50%, -50%)`);
+    // widget.style.push(`transform: translate(${x/2}vw,-${y/2}vh)`);
+    stack.push(widget);
+}
+
 function pxt_proc_space(stack)
 {
     let size = stack.pop();
@@ -287,6 +310,8 @@ function readSrc(file) {
                 // console.log(token);
                 if (token == null) throw new Error("something went wrong");
                 else if (PUSHABLE_TOKENS.indexOf(token.type)!=-1) stack.push(token.value);
+                else if (token.value == "set-z") error = pxt_proc_set_z(stack);
+                else if (token.value == "pos-abs") error = pxt_proc_pos_abs(stack);
                 else if (token.value == "group") error = pxt_proc_group(stack);
                 else if (token.value == "img") error = pxt_proc_img(stack);
                 else if (token.value == "img-pixel") error = pxt_proc_img(stack,pixel=true);
@@ -358,7 +383,6 @@ function readSrc(file) {
                         if (cur().type == TEXT) {
                             if (cur().value == "") continue;
                             tag = "span";
-                            // style.push(`flex-grow: 1`);
                             style.push(`font-size: ${cur().weight}vh`);
                             body = cur().value;
                         }
@@ -374,7 +398,7 @@ function readSrc(file) {
                         if (cur().type == IMG) {
                             single = true;
                             tag = "img";
-                            style.push(`flex-grow: ${cur().weight}`);
+                            style.push(`height: ${cur().weight}vh`);
                             props.push(`data-src="${cur().value}"`);
                         }
                         if (cur().type == BINDING) {

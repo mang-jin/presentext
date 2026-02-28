@@ -175,6 +175,10 @@ function makePtt(sss) {
         min-height: 0;
       }
 
+      body * {
+          position: relative;
+      }
+
       .frame {
           align-self: stretch;
           margin: 0.5rem;
