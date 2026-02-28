@@ -158,7 +158,7 @@ function makePtt(sss) {
       }
 
       .body {
-	      flex-direction: column;
+	    flex-direction: column;
         background: #f4f4f4;
         padding: 1rem;
         box-sizing: border-box;
@@ -171,6 +171,8 @@ function makePtt(sss) {
         align-items: center;
         flex-basis: 0;
         flex-shrink: 1;
+        min-width: 0;
+        min-height: 0;
       }
 
       .frame {

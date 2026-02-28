@@ -1,36 +1,22 @@
-1 1 group
+1 0 group
 begin
-    1 0 group
+    5 space
+    1 1 group
     begin
-        5 space
-        1 1 group
+        10 space
+        5 {} "#ffffff" "공통수학1: 행렬" text4
+        10 space
+        16.5 {"bold": true} "#ffffff" "직사각형의" text4
+        16.5 {"bold": true} "#ffffff" "배열과 연산" text4
+        17 space
+        1 binding
         begin
-            3 {} "#ffffff" "공통수학1: 행렬" text4
-        end 0 0 align-group 1 1 align-group
-    end
-    1 0 group
-    begin
-        5 space
-        1 1 group
-        begin
-            10 {"bold": true} "#ffffff" "직사각형의" text4
-            10 {"bold": true} "#ffffff" "배열과 연산" text4
-        end 0 0 align-group 1 1 align-group
-    end
-    7 space
-    1 0 group
-    begin
-        5 space
-        1 1 group
-        begin
-            1 binding
-            begin
-                2 {} "#ffffff" "어디고등학교 3학년 1반" text4
-                33 space
-                1.5 {} "#ffffffaa" "2030년도 1학기" text4
-            end
-        end 0 0 align-group 1 1 align-group
-    end
-end 0 0 align-group 1 0 align-group
+            3 {} "#ffffff" "어디고등학교 3학년 1반" text4
+            60 space
+            2.5 {} "#ffffffaa" "2030년도 1학기" text4
+        end
+    end 0 0 align-group 1 0 align-group
+end
 slide
 "#40b3ff" bg-clr
+

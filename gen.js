@@ -119,9 +119,9 @@ function pxt_proc_text4(stack)
 
 function pxt_proc_space(stack)
 {
-    let weight = stack.pop();
-    if (typeof weight != "number") return "space requires (weight: number)";
-    stack.push(new Widget(SPACE, 0, "", [`margin: ${weight}rem;`]));
+    let size = stack.pop();
+    if (typeof size != "number") return "space requires (size: number)";
+    stack.push(new Widget(SPACE, 0, "", [`margin: ${size/2}vh ${size/2}vw;`]));
 }
 
 function pxt_proc_img(stack,pixel=false)
@@ -359,7 +359,7 @@ function readSrc(file) {
                             if (cur().value == "") continue;
                             tag = "span";
                             // style.push(`flex-grow: 1`);
-                            style.push(`font-size: ${cur().weight}rem`);
+                            style.push(`font-size: ${cur().weight}vh`);
                             body = cur().value;
                         }
                         if (cur().type == FRAME || cur().type == GROUP || cur().type == BOX) {
