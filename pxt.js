@@ -5,6 +5,7 @@ const BOX = 3;
 const IMG = 4;
 const SPACE = 5;
 const BINDING = 6;
+const FRAME = 7;
 
 class Widget {
     constructor(type, weight, value) {
@@ -18,7 +19,7 @@ class Widget {
         this.align2 = "";
         this.bg = "";
         this.body = [];
-        this.color = 0;
+        this.color = null;
         this.is_bold = false;
         this.is_italic = false;
         this.is_underlined = false;
@@ -170,7 +171,7 @@ function makePtt(sss) {
         box-sizing: border-box;
       }
 
-      .body, .group {
+      .body, .group, .frame {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
@@ -179,10 +180,15 @@ function makePtt(sss) {
         flex-shrink: 1;
       }
 
-      .group {
+      .frame {
           align-self: stretch;
           margin: 0.5rem;
           padding: 1rem;
+      }
+      .group {
+          align-self: stretch;
+          margin: 0rem;
+          padding: 0rem;
       }
 
       .box {

@@ -5,13 +5,13 @@ begin
 end
 2.5 {} "Made by Kim" text
 slide
-1 0 group
+1 0 frame
 begin
-    1 0 group
+    1 0 frame
     begin
         20 {"bold": true} "Hello!" text
     end
-    1 1 group
+    1 1 frame
     begin
         1 space
         2 "Welcome to Presentext." text2
@@ -24,27 +24,34 @@ slide
 1 binding
 begin
     10 {} "You can be " text
-    10 {"bold": true} 0xFF0000 "C" text4
-    10 {"bold": true} 0xFF8000 "o" text4
-    10 {"bold": true} 0xFFFF00 "l" text4
-    10 {"bold": true} 0x008000 "o" text4
-    10 {"bold": true} 0x0000FF "r" text4
-    10 {"bold": true} 0x000080 "f" text4
-    10 {"bold": true} 0x800080 "u" text4
-    10 {"bold": true} 0x400040 "l" text4
+    10 {"bold": true} "#FF0000" "C" text4
+    10 {"bold": true} "#FF8000" "o" text4
+    10 {"bold": true} "#FFFF00" "l" text4
+    10 {"bold": true} "#008000" "o" text4
+    10 {"bold": true} "#0000FF" "r" text4
+    10 {"bold": true} "#000080" "f" text4
+    10 {"bold": true} "#800080" "u" text4
+    10 {"bold": true} "#400040" "l" text4
 end
 slide
 
-1 0xFFFFFFaa "you can also put images in here." text3
+1 "#FFFFFFaa" "you can also put images in here." text3
 "fog.jpg" slide-bg
 
-1 1 group
+1 1 frame
 begin
     3 "The placement of widgets is quite flexible." text2
-    1 "The group system make it easier to place things somewhere." text2
-    1 1 group
+    1 "The group system makes it easier to place things somewhere." text2
+    1 0 group
     begin
-        1 "Penger.png" img-pixel
+        3 1 group begin end
+        2 1 group
+        begin
+            10 "Penger.png" img-pixel
+            1 0 group begin 1 "#000000aa" "Image from penger.city" text3 end
+            0 1 align-group
+            1 2 align-group
+        end
     end
     0 2 align-group
     1 2 align-group

@@ -50,20 +50,19 @@ function pxt_proc_align_group(stack)
 
 function pxt_proc_text(stack)
 {
-    let usage = "text requires (weight:number, opt: {color: number, bold, italic, underlined, strikethrough: bool}, content: string)";
+    let usage = "text requires (weight: number, opt: {color: number, bold, italic, underlined, strikethrough: bool}, content: string)";
     let content = stack.pop();
     let opt = stack.pop();
     let weight = stack.pop();
     if (typeof weight != "number" || typeof content != "string" || !isObject(opt)) return usage+` but (${weight}, ${opt}, ${content})`;
-
-    let color = opt.color ?? 0;
+    let color = opt.color ?? "#000000";
     let bold = opt.bold ?? false;
     let italic = opt.italic ?? false;
     let underlined = opt.underlined ?? false;
     let strikethrough = opt.strikethrough ?? false;
-    if (typeof color != "number" ||
-       typeof bold != "boolean" || typeof italic != "boolean" ||
-       typeof underlined != "boolean" || typeof strikethrough != "boolean") return usage+` but (${weight}, ${opt}, ${content})`;
+    if (typeof color != "string" ||
+        typeof bold != "boolean" || typeof italic != "boolean" ||
+        typeof underlined != "boolean" || typeof strikethrough != "boolean") return usage+` but (${weight}, ${opt}, ${content})`;
 
     let newW = new Widget(TEXT,weight,content);
     newW.color = color;
@@ -87,14 +86,14 @@ function pxt_proc_text3(stack)
     let content = stack.pop();
     let color = stack.pop();
     let weight = stack.pop();
-    if (typeof color != "number" || typeof content != "string" || typeof weight != "number") return "text3 requires (weight: number, color: number, content: string)";
+    if (typeof color != "string" || typeof content != "string" || typeof weight != "number") return "text3 requires (weight: number, color: number, content: string)";
     let newW = new Widget(TEXT,weight,content);
     newW.color = color;
     stack.push(newW)
 }
 
 function isObject(val) {
-  return typeof val === 'object' && val !== null && !Array.isArray(val);
+    return typeof val === 'object' && val !== null && !Array.isArray(val);
 }
 
 function pxt_proc_text4(stack)
@@ -103,7 +102,7 @@ function pxt_proc_text4(stack)
     let color = stack.pop();
     let style = stack.pop();
     let weight = stack.pop();
-    if (typeof color != "number" || typeof content != "string" || !isObject(style) || typeof weight != "number")
+    if (typeof color != "string" || typeof content != "string" || !isObject(style) || typeof weight != "number")
         return "text4 requires (weight: number, style: object, color: number, content: string)";
     let newW = new Widget(TEXT,weight,content);
     newW.color = color;
@@ -150,12 +149,12 @@ function pxt_proc_binding(stack)
     stack.push(newGroup);
 }
 
-function pxt_proc_group(stack)
+function pxt_proc_frame(stack)
 {
     let vertical = stack.pop();
     let weight = stack.pop();
-    if (typeof weight != "number" || (typeof vertical != "boolean" && typeof vertical != "number")) return "group requires (weight: number, vertical: bool)";
-    let newGroup = new Widget(GROUP,weight,vertical ? "|" : "");
+    if (typeof weight != "number" || (typeof vertical != "boolean" && typeof vertical != "number")) return "frame requires (weight: number, vertical: bool)";
+    let newGroup = new Widget(FRAME,weight,vertical ? "|" : "");
     stack.push(newGroup);
 }
 
@@ -192,6 +191,15 @@ function pxt_proc_slide(stack,slides,value)
     slides.push(newSlide);
 }
 
+function pxt_proc_group(stack)
+{
+    let vertical = stack.pop();
+    let weight = stack.pop();
+    if (typeof weight != "number" || (typeof vertical != "boolean" && typeof vertical != "number")) return "group requires (weight: number, vertical: bool)";
+    let newGroup = new Widget(GROUP,weight,vertical ? "|" : "");
+    stack.push(newGroup);
+}
+
 let error = undefined;
 
 function find(line,start,predicate) {
@@ -209,20 +217,12 @@ function find_str_end(line,start) {
     return start;
 }
 
-fileInput.addEventListener("change", () => {
-    const file = fileInput.files[0];
-    if (!file) {
-        output.textContent = "Can't Find File";
-        return;
-    }
-
+function readSrc(file) {
     slides = []; // 이미 어딘가에서 선언됨.
 
-    const reader = new FileReader();
-
     error = undefined;
-    reader.onload = (event) => {
-        let t = event.target.result;
+    file.text().then(pxt_src => {
+        let t = pxt_src;
         let splited = [];
         let i = 0;
         i = find(t,i,(chr) => (!/\s/.test(chr)));
@@ -271,6 +271,7 @@ fileInput.addEventListener("change", () => {
                 // console.log(token);
                 if (token == null) throw new Error("something went wrong");
                 else if (PUSHABLE_TOKENS.indexOf(token.type)!=-1) stack.push(token.value);
+                else if (token.value == "group") error = pxt_proc_group(stack);
                 else if (token.value == "img") error = pxt_proc_img(stack);
                 else if (token.value == "img-pixel") error = pxt_proc_img(stack,pixel=true);
                 else if (token.value == "bg") error = pxt_proc_bg(stack);
@@ -279,7 +280,7 @@ fileInput.addEventListener("change", () => {
                 else if (token.value == "text2") error = pxt_proc_text2(stack);
                 else if (token.value == "text3") error = pxt_proc_text3(stack);
                 else if (token.value == "text4") error = pxt_proc_text4(stack);
-                else if (token.value == "group") error = pxt_proc_group(stack);
+                else if (token.value == "frame") error = pxt_proc_frame(stack);
                 else if (token.value == "binding") error = pxt_proc_binding(stack);
                 else if (token.value == "begin") error = pxt_proc_begin(stack);
                 else if (token.value == "end") error = pxt_proc_end(stack);
@@ -322,7 +323,8 @@ fileInput.addEventListener("change", () => {
                         if (cur().type == TEXT) {
                             if (cur().value == "") continue;
                             let tag = "span";
-                            let txt_color = "#"+cur().color.toString(16).padStart(6,"0");
+                            // "#"+cur().color.toString(16).padStart(6,"0")
+                            let txt_color = cur().color ?? "#000000";
                             let txt_bold = cur().is_bold ? "bold" : "normal";
                             let txt_italic = cur().is_italic ? "font-style: italic" : "";
                             let txt_deco = (cur().is_underlined ? "underline " : "")+(cur().is_strikethrough ? "line-through" : "");
@@ -333,7 +335,7 @@ fileInput.addEventListener("change", () => {
                             result += `${txt_italic}; ${txt_deco}`;
                             result += `font-size: ${cur().weight}rem;">${cur().value}</${tag}>`;
                         }
-                        if (cur().type == GROUP || cur().type == BOX) {
+                        if (cur().type == FRAME || cur().type == GROUP || cur().type == BOX) {
                             let tag = "div";
                             let flex_dir = cur().value == "|" ? "column" : "row";
                             let style = "";
@@ -343,7 +345,7 @@ fileInput.addEventListener("change", () => {
                             if (cur().align2) {
                                 style += "justify-content: " + cur().align2 + ";";
                             }
-                            result += `<${tag} class="group ${
+                            result += `<${tag} class="${cur().type == GROUP ? "group" : "frame"} ${
                 cur().type == BOX ? "box" : ""
               } ${
                 cur().bg ? "img-" + cur().bg : ""
@@ -384,12 +386,20 @@ fileInput.addEventListener("change", () => {
             });
         });
         dwBtn.onclick = () => downloadPtt(presentation);
-    };
+    });
+}
 
-    reader.onerror = () => {
-        output.textContent = "error";
-    };
-
-    // M�� �<\ }0
-    reader.readAsText(file, "UTF-8");
+let file = null;
+fileInput.addEventListener("change", () => {
+    file = fileInput.files[0];
+    if (!file) {
+        alert("Couldn't Find File");
+        return;
+    }
+    readSrc(file);
+});
+document.addEventListener("keydown", (event) => {
+    if (event.key == "r") {
+        readSrc(file);
+    }
 });
