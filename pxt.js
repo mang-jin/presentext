@@ -8,23 +8,16 @@ const BINDING = 6;
 const FRAME = 7;
 
 class Widget {
-    constructor(type, weight, value) {
+    constructor(type, weight, value, style=[], class_list=[]) {
         this.type = type;
         this.weight = weight;
         this.all_weight = 0;
         this.weight_cnt = 0;
         this.value = value;
         this.Parent = null;
-        this.align1 = "";
-        this.align2 = "";
-        this.bg = "";
         this.body = [];
-        this.color = null;
-        this.is_bold = false;
-        this.is_italic = false;
-        this.is_underlined = false;
-        this.is_strikethrough = false;
-        this.rendering = "";
+        this.style = style;
+        this.class_list = class_list;
     }
     Push(value, back=false) {
         if (value.weight != 0) {
@@ -196,6 +189,13 @@ function makePtt(sss) {
           outline: 2px solid black;
       }
 
+      .output *,
+      .group *,
+      .frame * {
+          min-width: 0;
+          flex-basis: 0;
+      }
+
     </style>
   </head>
   <body></body>
@@ -203,18 +203,10 @@ function makePtt(sss) {
 <script type="text/javascript">
   ${asset_preloads}
 
-  let backgrounds = ${JSON.stringify(slides.map((c)=>c.value))}
-  let slides = [${sss
-    .map((something) => "'" + something.replace(/\'/g, "\\'") + "'")
-    .join(",")}];
-  slides.forEach((sss,i)=>{
-	  let new_slide = document.createElement("div");
-	  new_slide.classList.add("body");
-      if (backgrounds[i]) new_slide.classList.add("img-"+backgrounds[i]);
-	  new_slide.id = i.toString();
-	  new_slide.innerHTML=sss;
-	  new_slide.style.display="none";
-	  document.body.appendChild(new_slide);
+  let slide_length = ${slides.length};
+  document.body.innerHTML="${sss.replaceAll("\"","\\\"")}";
+  document.querySelectorAll(".body").forEach((sss,i)=>{
+	 sss.style.display="none";
   });
   document.querySelectorAll("img").forEach(el=>{
       el.src=assets[el.dataset.src];
@@ -224,7 +216,7 @@ function makePtt(sss) {
 <script>
   let idx = -1;
   function next() {
-    if (idx == slides.length - 1) return;
+    if (idx == slide_length - 1) return;
     idx++;
     Array.from(document.getElementsByClassName("body")).forEach(element=>{
     	element.style.display="none";

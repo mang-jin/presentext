@@ -36,7 +36,8 @@ end
 slide
 
 1 "#FFFFFFaa" "you can also put images in here." text3
-"fog.jpg" slide-bg
+slide
+"fog.jpg" bg-img
 
 1 1 frame
 begin
